@@ -1,0 +1,14 @@
+body {
+/*    background-color: #333333;
+    color: #eeeeee*/
+}
+
+header {
+  /*  background-color: #171518;*/
+    padding: 32px;
+    text-align: center;
+}
+
+.main-content{
+    padding: 16px;
+}
