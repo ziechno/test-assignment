@@ -23,7 +23,7 @@ public class TickerService {
 
     private TickerDao tickerDao;
 
-    public List<Ticker> fetchTickers(List<String> symbols) throws IOException {
+    public ArrayList<Ticker> fetchTickers(ArrayList<String> symbols) throws IOException {
         tickerDao = new TickerDao();
         List<Ticker> tickerList = new ArrayList<Ticker>();
 

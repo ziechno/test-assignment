@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Utilities {
 
@@ -29,5 +31,10 @@ public class Utilities {
     public static Integer milisecondToDate(long ms){
         LocalDate result = Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()).toLocalDate();
         return result.getYear();
+    }
+
+    public static ArrayList<String> parseSymbols(String s){
+        ArrayList<String> symbols = new ArrayList<String>(Arrays.asList(s.split("\\s*,\\s*")));
+        return symbols;
     }
 }

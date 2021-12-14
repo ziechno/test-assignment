@@ -26,10 +26,13 @@ function test(){
 
 
 function fetch(){
-    var symbol = document.getElementById("symbol-input").value;
+    var symbols = document.getElementById("symbol-input").value;
+    var date = document.getElementById("date-input").value;
     $.ajax({
     type:'Get',
-    data:{name: symbol},
+    data:{symbols: symbols,
+          date: date
+    },
     url:"TestServlet",
     success: function(){
         if(data == "false"){

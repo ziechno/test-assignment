@@ -2,6 +2,7 @@ package entities;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Time;
 
 @Entity
 @Table(name = "data")
@@ -26,6 +27,17 @@ public class Data {
 
     @Column(name = "date")
     private Date date;
+
+    @Column(name = "time")
+    private Time time;
+
+    public Time getTime() {
+        return time;
+    }
+
+    public void setTime(Time time) {
+        this.time = time;
+    }
 
     public Date getDate() {
         return date;
