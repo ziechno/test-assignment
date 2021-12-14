@@ -83,4 +83,17 @@ public class Ticker {
     public void setId(Long id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Ticker{" +
+                "id=" + id +
+                ", symbol='" + symbol + '\'' +
+                ", full_name='" + full_name + '\'' +
+                ", year_founded=" + year_founded +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", employeeNumber=" + employeeNumber +
+                '}';
+    }
 }

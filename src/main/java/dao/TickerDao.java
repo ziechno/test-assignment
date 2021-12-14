@@ -24,12 +24,25 @@ public class TickerDao extends AbstractDao {
         return resultList;
     }
 
-    public void save(Ticker ticker) {
+    public Ticker findBySymbol(String s) {
+        EntityManager em = createEntityManager();
+        Query q = em.createQuery("SELECT t FROM Ticker t WHERE t.symbol= :symbol").setParameter("symbol",s);
+        if(q.getResultList().isEmpty()){
+            em.close();
+            System.out.println("empty");
+            return null;
+        }
+        Ticker ticker = (Ticker) q.getResultList().get(0);
+        System.out.println(ticker.getSymbol() + " from DAO");
+        em.close();
+        return ticker;
+    }
+
+    public void save(Ticker t) {
         EntityManager em = createEntityManager();
         em.getTransaction().begin();
-        em.persist(ticker);
+        em.persist(t);
         em.getTransaction().commit();
         em.close();
     }
-
 }

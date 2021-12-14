@@ -1,17 +1,16 @@
 package servlets;
 
-import yahoofinance.Stock;
-import yahoofinance.YahooFinance;
+import entities.Ticker;
+import services.TickerService;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.annotation.*;
-import java.io.BufferedReader;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
 
 @WebServlet(name = "TestServlet", value = "/TestServlet")
 public class TestServlet extends HttpServlet {
@@ -20,22 +19,19 @@ public class TestServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
 
-        URL test = new URL("https://query1.finance.yahoo.com/v11/finance/quoteSummary/AAPL?modules=assetProfile");
-        URLConnection testConnection = test.openConnection();
+        String tickerSymbols = request.getParameter("symbols");
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(testConnection.getInputStream()));
-        String i;
-        while ((i = br.readLine()) != null)
-        {
-            response.getWriter().print(i);
+        TickerService tickerService = new TickerService();
+        ArrayList<Ticker> tickerList = tickerService.fetchTickers(tickerSymbols);
+
+        DataService dataService = new DataService();
+
+        for(Ticker t : tickerList){
+            dataService.fetchData(t, )
         }
 
-      /*  Gson gson = new Gson();
-        String jsonData;
 
-        jsonData = gson.toJson(quizzes);
-        response.getWriter().print(jsonData);
-        System.out.println(jsonData);*/
+
     }
 
     @Override

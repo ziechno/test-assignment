@@ -1,7 +1,6 @@
 package dao;
 
 import entities.Data;
-import entities.Ticker;
 
 import javax.persistence.EntityManager;
 
