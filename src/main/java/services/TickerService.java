@@ -19,22 +19,22 @@ public class TickerService {
     private static final String QUOTE_SUMMARY_MODULE = "?modules=assetProfile";
     // full name, market cap, first trade tade
     private static final String FINANCE_QUOTE_BASEURL = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=";
-    private static final String FINANCE_CHART_BASEURL = "https://query1.finance.yahoo.com/v8/finance/chart/";
+
 
     private TickerDao tickerDao;
 
     public ArrayList<Ticker> fetchTickers(ArrayList<String> symbols) throws IOException {
         tickerDao = new TickerDao();
-        List<Ticker> tickerList = new ArrayList<Ticker>();
+        ArrayList<Ticker> tickerList = new ArrayList<Ticker>();
 
         for(String s : symbols){
             Ticker ticker = tickerDao.findBySymbol(s);
             if(ticker == null){
-                System.out.println("If from service");
                  ticker = getTickerFromServer(s);
-                 //tickerDao.save(ticker);
+                 tickerDao.save(ticker);
             }
-            //tickerList.add(ticker);
+            tickerList.add(ticker);
+            System.out.println(tickerList.get(0));
         }
     return tickerList;
     }
@@ -56,15 +56,13 @@ public class TickerService {
 
         Ticker ticker = new Ticker();
         ticker.setSymbol(s);
-        ticker.setFull_name(assetInfo.getString("longName"));
+        ticker.setFullName(assetInfo.getString("longName"));
         ticker.setState(assetProfile.getString("state"));
         ticker.setCity(assetProfile.getString("city"));
         ticker.setEmployeeNumber(assetProfile.getInt("fullTimeEmployees"));
         Integer yearFounded = Utilities.milisecondToDate(assetInfo.getLong("firstTradeDateMilliseconds"));
-        ticker.setYear_founded(yearFounded);
-
-        tickerDao.save(ticker);
-        return null;
+        ticker.setYearFounded(yearFounded);
+        return ticker;
     }
 
     private void createTickerProfile(Ticker t, String i ){

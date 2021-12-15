@@ -8,6 +8,13 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>entities.Ticker</class>
         <class>entities.Data</class>
+        <class>entities.DateEntry</class>
+        <class>entities.Ticker</class>
+        <class>entities.TickerData</class>
+        <class>entities.DateEntry</class>
+        <class>entities.Ticker</class>
+        <class>entities.DateEntry</class>
+        <class>entities.TickerData</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/testdb" />

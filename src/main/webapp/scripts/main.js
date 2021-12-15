@@ -23,7 +23,9 @@ function test(){
     })
 })*/
 
-
+function setTodayDate(){
+    document.getElementById("date-input").value = '2021-12-15';
+}
 
 function fetch(){
     var symbols = document.getElementById("symbol-input").value;

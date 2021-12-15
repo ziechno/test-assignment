@@ -10,14 +10,14 @@ public class Ticker {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "symbol", unique = true)
-    private String symbol;
-
     @Column(name = "full_name")
-    private String full_name;
+    private String fullName;
 
     @Column(name = "year_founded")
-    private Integer year_founded;
+    private Integer yearFounded;
+
+    @Column(name = "employee_number")
+    private Integer employeeNumber;
 
     @Column(name = "city")
     private String city;
@@ -25,15 +25,15 @@ public class Ticker {
     @Column(name = "state")
     private String state;
 
-    @Column(name = "employee_number")
-    private Integer employeeNumber;
+    @Column(name = "symbol")
+    private String symbol;
 
-    public Integer getEmployeeNumber() {
-        return employeeNumber;
+    public String getSymbol() {
+        return symbol;
     }
 
-    public void setEmployeeNumber(Integer employeeNumber) {
-        this.employeeNumber = employeeNumber;
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     public String getState() {
@@ -52,28 +52,28 @@ public class Ticker {
         this.city = city;
     }
 
-    public Integer getYear_founded() {
-        return year_founded;
+    public Integer getEmployeeNumber() {
+        return employeeNumber;
     }
 
-    public void setYear_founded(Integer year_founded) {
-        this.year_founded = year_founded;
+    public void setEmployeeNumber(Integer employeeNumber) {
+        this.employeeNumber = employeeNumber;
     }
 
-    public String getFull_name() {
-        return full_name;
+    public Integer getYearFounded() {
+        return yearFounded;
     }
 
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
+    public void setYearFounded(Integer yearFounded) {
+        this.yearFounded = yearFounded;
     }
 
-    public String getSymbol() {
-        return symbol;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public Long getId() {
@@ -82,18 +82,5 @@ public class Ticker {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "Ticker{" +
-                "id=" + id +
-                ", symbol='" + symbol + '\'' +
-                ", full_name='" + full_name + '\'' +
-                ", year_founded=" + year_founded +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                ", employeeNumber=" + employeeNumber +
-                '}';
     }
 }

@@ -26,14 +26,15 @@ public class TickerDao extends AbstractDao {
 
     public Ticker findBySymbol(String s) {
         EntityManager em = createEntityManager();
+        em.getTransaction().begin();
         Query q = em.createQuery("SELECT t FROM Ticker t WHERE t.symbol= :symbol").setParameter("symbol",s);
-        if(q.getResultList().isEmpty()){
-            em.close();
-            System.out.println("empty");
-            return null;
+        Ticker ticker = null;
+
+        if(!(q.getResultList().isEmpty())){
+            System.out.println("not empty");
+            ticker = (Ticker) q.getResultList().get(0);
         }
-        Ticker ticker = (Ticker) q.getResultList().get(0);
-        System.out.println(ticker.getSymbol() + " from DAO");
+        em.getTransaction().commit();
         em.close();
         return ticker;
     }

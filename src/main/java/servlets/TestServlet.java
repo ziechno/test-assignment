@@ -1,8 +1,11 @@
 package servlets;
 
-import entities.Data;
+
 import entities.Ticker;
+import entities.TickerData;
 import services.DataService;
+
+import services.TickerDataService;
 import services.TickerService;
 import utils.Utilities;
 
@@ -30,14 +33,9 @@ public class TestServlet extends HttpServlet {
         ArrayList<String> tickerSymbolList = Utilities.parseSymbols(tickerSymbols);
         ArrayList<Ticker> tickerList = tickerService.fetchTickers(tickerSymbolList);
 
-        DataService dataService = new DataService();
-
-        for(Ticker t : tickerList){
-            dataService.fetchData(t, date);
-        }
-
-
-
+        TickerDataService tickerDataService = new TickerDataService();
+        Map<Ticker, ArrayList<TickerData>> tickerDataMap = tickerDataService.fetchTickerData(tickerList, date);
+        System.out.println("finished");
     }
 
     @Override
