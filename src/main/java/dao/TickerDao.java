@@ -4,6 +4,7 @@ import entities.Ticker;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TickerDao extends AbstractDao {
@@ -45,5 +46,17 @@ public class TickerDao extends AbstractDao {
         em.persist(t);
         em.getTransaction().commit();
         em.close();
+    }
+
+    public ArrayList<Ticker> getAllFromList(ArrayList<String> tickerSymbols) {
+        ArrayList<Ticker> tickers;
+        EntityManager em = createEntityManager();
+        em.getTransaction().begin();
+        Query q = em.createQuery("SELECT t FROM Ticker t WHERE t.symbol IN :tickerSymbols");
+        q.setParameter("tickerSymbols", tickerSymbols);
+        tickers = (ArrayList<Ticker>) q.getResultList();
+        em.getTransaction().commit();
+        em.close();
+        return tickers;
     }
 }

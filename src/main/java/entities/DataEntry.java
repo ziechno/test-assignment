@@ -1,29 +1,18 @@
 package entities;
 
 import javax.persistence.*;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "ticker_data")
-public class TickerData {
+@Table(name = "data_entry")
+public class DataEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Override
-    public String toString() {
-        return "TickerData{" +
-                "id=" + id +
-                ", time=" + time +
-                ", closePrice=" + closePrice +
-                ", openPrice=" + openPrice +
-                ", dateEntry=" + dateEntry +
-                '}';
-    }
-
-    @Column(name = "time")
-    private LocalTime time;
+    @Column(name = "timestamp")
+    private LocalDateTime timestamp;
 
     @Column(name = "close_price")
     private Double closePrice;
@@ -32,15 +21,15 @@ public class TickerData {
     private Double openPrice;
 
     @ManyToOne
-    @JoinColumn(name = "date_entry_id")
-    private DateEntry dateEntry;
+    @JoinColumn(name = "ticker_id")
+    private Ticker ticker;
 
-    public DateEntry getDateEntry() {
-        return dateEntry;
+    public Ticker getTicker() {
+        return ticker;
     }
 
-    public void setDateEntry(DateEntry dateEntry) {
-        this.dateEntry = dateEntry;
+    public void setTicker(Ticker ticker) {
+        this.ticker = ticker;
     }
 
     public Double getOpenPrice() {
@@ -59,12 +48,12 @@ public class TickerData {
         this.closePrice = closePrice;
     }
 
-    public LocalTime getTime() {
-        return time;
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 
-    public void setTime(LocalTime time) {
-        this.time = time;
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
     public Long getId() {

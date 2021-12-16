@@ -1,13 +1,10 @@
 package servlets;
 
 
+import entities.DataEntry;
 import entities.Ticker;
-import entities.TickerData;
-import services.DataService;
-
-import services.TickerDataService;
+import services.DataEntryService;
 import services.TickerService;
-import utils.Utilities;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 
 @WebServlet(name = "TestServlet", value = "/TestServlet")
@@ -30,11 +26,11 @@ public class TestServlet extends HttpServlet {
         String date = request.getParameter("date");
 
         TickerService tickerService = new TickerService();
-        ArrayList<String> tickerSymbolList = Utilities.parseSymbols(tickerSymbols);
-        ArrayList<Ticker> tickerList = tickerService.fetchTickers(tickerSymbolList);
+        ArrayList<Ticker> tickerList = tickerService.fetchTickers(tickerSymbols);
 
-        TickerDataService tickerDataService = new TickerDataService();
-        Map<Ticker, ArrayList<TickerData>> tickerDataMap = tickerDataService.fetchTickerData(tickerList, date);
+        DataEntryService dataEntryService = new DataEntryService();
+
+        Map<Ticker, ArrayList<DataEntry>> tickerDataMap = dataEntryService.fetchTickerData(tickerList, date);
         System.out.println("finished");
     }
 
