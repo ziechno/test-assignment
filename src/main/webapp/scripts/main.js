@@ -1,49 +1,66 @@
-/*document.getElementById('submit-button').addEventListener('click', test);
-
-function test(){
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'TestServlet', true);
-
-    xhr.send();
+window.onload = function(){
+    document.getElementById("date-input").value = new Date('MMM DD YYY');
 }
 
-/*$("#submit-button").click(function(){
-    
-    $.ajax({
-       url:'TestServlet',
-       data:{name: symbol},
-       type:'get',
-       cache:false,
-       success:function(data){
-          alert(data);
-       },
-       error:function(){
-         alert('error');
-       }
-    })
-})*/
+var jsonData;
 
-function setTodayDate() {
-    document.getElementById("date-input").value = '2021-12-15';
-}
+$(document).ready(function() {
+    $('form').on('submit', function(e){
+        e.preventDefault();
+    });
+  });
+  
 
 function fetch() {
     var symbols = document.getElementById("symbol-input").value;
     var date = document.getElementById("date-input").value;
     $.ajax({
-        type: 'Get',
+        type: 'GET',
+        url: "TestServlet",
         data: {
             symbols: symbols,
             date: date
         },
-        url: "TestServlet",
-        success: function () {
-            if (data == "false") {
-                alert("success")
-            } else {
-                alert(fail);
-            }
+        success: function(data) {
+            var tableBody = document.getElementById("table-body");
+            var tableData = '';
+        
+            data.forEach(element => {
+                tableData += '<th scope="row">'+element.ticker.symbol+'</th>'
+                + '<td>'+element.ticker.fullName+'</td>'
+                + '<td>'+element.ticker.yearFounded+'</td>'
+                + '<td>'+element.ticker.state+'</td>'
+                + '<td>'+element.ticker.city+'</td>';
+                element.dataEntries.forEach(element => {
+                    tableData += '<td>'+element.openPrice+'</td>'
+                    + '<td>'+element.closePrice+'</td>'
+                    + '<td>'+element.timestamp+'</td>';
+                });
+                tableBody.innerHTML = tableData;
+                tableData = '';
+            });
+            
         }
     });
-    return;
+}
+
+function loadData(data) {
+    var tableBody = window.getElementById("table-body");
+    var tableData = '';
+
+    data.forEach(element => {
+        tableData += '<th scope="row">element.ticker.symbol</th>'
+        + '<td>element.ticker.fullName</td>'
+        + '<td>element.ticker.state</td>'
+        + '<td>element.ticker.city</td>'
+        + '<td>element.ticker.yearFounded</td>';
+        element.dataEntries.forEach(element => {
+            tableData +=  + '<td>Apple Inc.</td>'
+            + '<td>element.openPrice</td>'
+            + '<td>element.closePrice</td>'
+            + '<td>element.timestamp</td>';
+        });
+             
+    });
+    tableBody.innerHTML = tableData;
 }

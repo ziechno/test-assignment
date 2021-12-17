@@ -12,3 +12,7 @@ header {
 .main-content {
     padding: 16px;
 }
+
+td{
+    font-size: small;
+}

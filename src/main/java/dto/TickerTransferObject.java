@@ -1,12 +1,15 @@
 package dto;
 
+import com.google.gson.annotations.Expose;
 import entities.DataEntry;
 import entities.Ticker;
 
 import java.util.ArrayList;
 
 public class TickerTransferObject {
+    @Expose
     private Ticker ticker;
+    @Expose
     private ArrayList<DataEntry> dataEntries;
 
     public Ticker getTicker() {

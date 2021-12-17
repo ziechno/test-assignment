@@ -1,5 +1,7 @@
 package servlets;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dto.TickerTransferObject;
 import entities.Ticker;
 import services.DataEntryService;
@@ -30,11 +32,14 @@ public class TestServlet extends HttpServlet {
 
         //Get data about tickers
         DataEntryService dataEntryService = new DataEntryService();
-
         ArrayList<TickerTransferObject> tickerTransferObjects = dataEntryService.fetchTickerData(tickerList, date);
 
-        String jsonString = JSONObjectMapper.objectMapper.writeValueAsString(tickerTransferObjects);
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        //String jsonString = JSONObjectMapper.objectMapper.writeValueAsString(tickerTransferObjects);
+        String jsonString = gson.toJson(tickerTransferObjects);
         System.out.println(jsonString);
+
+        response.getWriter().print(jsonString);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package entities;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -13,10 +15,11 @@ public class DataEntry {
     private Long id;
 
 
-
+    @Expose
     @Column(name = "close_price")
     private Double closePrice;
 
+    @Expose
     @Column(name = "open_price")
     private Double openPrice;
 
@@ -24,6 +27,7 @@ public class DataEntry {
     @JoinColumn(name = "ticker_id")
     private Ticker ticker;
 
+    @Expose
     @Column(name = "timestamp")
     private Timestamp timestamp;
 
