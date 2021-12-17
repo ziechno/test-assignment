@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JSONObjectMapper {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    public static final ObjectMapper objectMapper = new ObjectMapper();
 
-  public static JsonNode getObjectByKey(String jsonData, String key) throws JsonProcessingException {
+    public static JsonNode getObjectByKey(String jsonData, String key) throws JsonProcessingException {
         JsonNode rootNode = objectMapper.readTree(jsonData);
         JsonNode keyNode = rootNode.findPath(key);
         return keyNode;
@@ -28,7 +28,7 @@ public class JSONObjectMapper {
 
     public static void updateObject(ObjectNode object, String jsonData, String[] keys) throws JsonProcessingException {
         JsonNode rootNode = objectMapper.readTree(jsonData);
-        for (String key : keys){
+        for (String key : keys) {
             JsonNode keyNode = rootNode.path(key);
             object.put(key, keyNode.asText());
         }

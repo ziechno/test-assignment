@@ -9,11 +9,11 @@ import java.util.List;
 
 public class TickerDao extends AbstractDao {
 
-    public TickerDao(){
+    public TickerDao() {
         super();
     }
 
-    public Ticker getTicker(){
+    public Ticker getTicker() {
         return null;
     }
 
@@ -28,10 +28,10 @@ public class TickerDao extends AbstractDao {
     public Ticker findBySymbol(String s) {
         EntityManager em = createEntityManager();
         em.getTransaction().begin();
-        Query q = em.createQuery("SELECT t FROM Ticker t WHERE t.symbol= :symbol").setParameter("symbol",s);
+        Query q = em.createQuery("SELECT t FROM Ticker t WHERE t.symbol= :symbol").setParameter("symbol", s);
         Ticker ticker = null;
 
-        if(!(q.getResultList().isEmpty())){
+        if (!(q.getResultList().isEmpty())) {
             System.out.println("not empty");
             ticker = (Ticker) q.getResultList().get(0);
         }

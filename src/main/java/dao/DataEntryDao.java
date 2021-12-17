@@ -6,6 +6,7 @@ import entities.Ticker;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,8 +18,8 @@ public class DataEntryDao extends AbstractDao {
     }
 
     public ArrayList<DataEntry> getDailyData(Ticker t, String date) {
-        LocalDateTime start = LocalDate.parse(date).atStartOfDay();
-        LocalDateTime end = start.plusHours(24);
+        Timestamp start = Timestamp.valueOf(LocalDate.parse(date).atStartOfDay());
+        Timestamp end = Timestamp.valueOf(LocalDate.parse(date).atStartOfDay().plusHours(24));
         EntityManager em = createEntityManager();
         em.getTransaction().begin();
         Query q = em.createQuery("SELECT de FROM DataEntry de WHERE de.ticker=:ticker AND " +
@@ -34,7 +35,7 @@ public class DataEntryDao extends AbstractDao {
     public void saveAll(ArrayList<DataEntry> tickerData) {
         EntityManager em = createEntityManager();
         em.getTransaction().begin();
-        for(DataEntry dt : tickerData){
+        for (DataEntry dt : tickerData) {
             em.persist(dt);
         }
         em.getTransaction().commit();

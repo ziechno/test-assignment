@@ -23,26 +23,27 @@ function test(){
     })
 })*/
 
-function setTodayDate(){
+function setTodayDate() {
     document.getElementById("date-input").value = '2021-12-15';
 }
 
-function fetch(){
+function fetch() {
     var symbols = document.getElementById("symbol-input").value;
     var date = document.getElementById("date-input").value;
     $.ajax({
-    type:'Get',
-    data:{symbols: symbols,
-          date: date
-    },
-    url:"TestServlet",
-    success: function(){
-        if(data == "false"){
-            alert("success")
-        }else{
-            alert(fail);
-        } 
-    }
-});
-return;
+        type: 'Get',
+        data: {
+            symbols: symbols,
+            date: date
+        },
+        url: "TestServlet",
+        success: function () {
+            if (data == "false") {
+                alert("success")
+            } else {
+                alert(fail);
+            }
+        }
+    });
+    return;
 }

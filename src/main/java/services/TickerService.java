@@ -1,6 +1,5 @@
 package services;
 
-
 import dao.TickerDao;
 import entities.Ticker;
 import utils.JSONObjectMapper;
@@ -9,6 +8,7 @@ import utils.Utilities;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -26,40 +26,47 @@ public class TickerService {
         ArrayList<String> tickerSymbols = Utilities.parseSymbols(symbols);
         ArrayList<Ticker> tickerList = tickerDao.getAllFromList(tickerSymbols);
         //Remove symbols that have DB entry
-        for(Ticker t : tickerList){
+        for (Ticker t : tickerList) {
             tickerSymbols.removeIf(n -> (n.equals(t.getSymbol())));
         }
-        //Get non-existing tickers from server
-        for(String s : tickerSymbols){
+        //Get non-existing tickers from server and save them to DB
+        for (String s : tickerSymbols) {
             Ticker ticker = getTickerFromServer(s);
+            if(ticker != null){
             tickerDao.save(ticker);
             tickerList.add(ticker);
+            }
         }
-    return tickerList;
+        return tickerList;
     }
 
     private Ticker getTickerFromServer(String s) throws IOException {
+        //Get state, city and number of employees as JSON
         URL quoteSummaryURL = new URL(QUOTE_SUMMARY_BASEURL + s + QUOTE_SUMMARY_MODULE);
-        URLConnection tickerServerConnection = quoteSummaryURL.openConnection();
+        HttpURLConnection tickerServerConnection = (HttpURLConnection) quoteSummaryURL.openConnection();
 
+        if(tickerServerConnection.getResponseCode() == 200) {
         BufferedReader br = new BufferedReader(new InputStreamReader(tickerServerConnection.getInputStream()));
         String quoteSummary = br.readLine();
 
-        URL financeQuoteURL = new URL(FINANCE_QUOTE_BASEURL + s);
-        tickerServerConnection = financeQuoteURL.openConnection();
 
-        br = new BufferedReader(new InputStreamReader(tickerServerConnection.getInputStream()));
-        String quoteResponse = br.readLine();
+            //Get full name, year founded and market cap as JSON
+            URL financeQuoteURL = new URL(FINANCE_QUOTE_BASEURL + s);
+            tickerServerConnection = (HttpURLConnection) financeQuoteURL.openConnection();
+            br = new BufferedReader(new InputStreamReader(tickerServerConnection.getInputStream()));
+            String quoteResponse = br.readLine();
 
-        Ticker ticker = new Ticker();
-        ticker.setSymbol(s);
-        ticker.setFullName(JSONObjectMapper.getObjectByKey(quoteResponse, "longName").asText());
-        ticker.setState(JSONObjectMapper.getObjectByKey(quoteSummary, "state").asText());
-        ticker.setCity(JSONObjectMapper.getObjectByKey(quoteSummary, "city").asText());
-        Long yearMilliseconds = JSONObjectMapper.getObjectByKey(quoteResponse, "firstTradeDateMilliseconds").asLong();
-        ticker.setYearFounded(Utilities.milisecondToDate(yearMilliseconds));
-        ticker.setEmployeeNumber(JSONObjectMapper.getObjectByKey(quoteSummary, "fullTimeEmployees").asInt());
-
-        return ticker;
+            //Create new ticker instance and assign values
+            Ticker ticker = new Ticker();
+            ticker.setSymbol(s);
+            ticker.setFullName(JSONObjectMapper.getObjectByKey(quoteResponse, "longName").asText());
+            ticker.setState(JSONObjectMapper.getObjectByKey(quoteSummary, "state").asText());
+            ticker.setCity(JSONObjectMapper.getObjectByKey(quoteSummary, "city").asText());
+            Long yearMilliseconds = JSONObjectMapper.getObjectByKey(quoteResponse, "firstTradeDateMilliseconds").asLong();
+            ticker.setYearFounded(Utilities.milisecondToDate(yearMilliseconds));
+            ticker.setEmployeeNumber(JSONObjectMapper.getObjectByKey(quoteSummary, "fullTimeEmployees").asInt());
+            return ticker;
+        }
+        return null;
     }
 }

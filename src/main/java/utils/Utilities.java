@@ -6,28 +6,34 @@ import java.util.Arrays;
 
 public class Utilities {
 
-    public static Integer milisecondToDate(long ms){
+    public static Integer milisecondToDate(long ms) {
         LocalDate result = Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()).toLocalDate();
         return result.getYear();
     }
 
-    public static ArrayList<String> parseSymbols(String s){
-        ArrayList<String> symbols = new ArrayList<>(Arrays.asList(s.split("\\s*,\\s*")));
+    public static ArrayList<String> parseSymbols(String s) {
+        String uppercase = s.toUpperCase();
+        ArrayList<String> symbols = new ArrayList<>(Arrays.asList(uppercase.split("\\s*,\\s*")));
         return symbols;
     }
 
-    public static String dateToEpoch(String s){
+    public static Long dateToEpoch(String s) {
         LocalDate date = LocalDate.parse(s);
         Instant instant = date.atStartOfDay(ZoneId.systemDefault()).toInstant();
-        String epoch = String.valueOf(instant.getEpochSecond());
+        Long epoch = instant.getEpochSecond();
         return epoch;
     }
 
-    public static LocalDateTime epochToTimestamp(String d){
+    public static LocalDateTime epochToTimestamp(String d) {
         Long timeInSeconds = Long.parseLong(d);
-        LocalDateTime timestamp = LocalDateTime.ofEpochSecond(timeInSeconds, 0, ZoneOffset.UTC);
+        LocalDateTime timestamp = LocalDateTime.ofInstant(Instant.ofEpochSecond(timeInSeconds), ZoneId.systemDefault());
         return timestamp;
     }
 
 
+    public static long dateTimeToEpoch(LocalDateTime dateTime) {
+        Instant instant = dateTime.atZone(ZoneId.systemDefault()).toInstant();
+        long epoch = instant.getEpochSecond();
+        return epoch;
+    }
 }

@@ -1,10 +1,10 @@
 package servlets;
 
-
-import entities.DataEntry;
+import dto.TickerTransferObject;
 import entities.Ticker;
 import services.DataEntryService;
 import services.TickerService;
+import utils.JSONObjectMapper;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 
 @WebServlet(name = "TestServlet", value = "/TestServlet")
 public class TestServlet extends HttpServlet {
@@ -25,13 +24,17 @@ public class TestServlet extends HttpServlet {
         String tickerSymbols = request.getParameter("symbols");
         String date = request.getParameter("date");
 
+        //Get tickers to be presented
         TickerService tickerService = new TickerService();
         ArrayList<Ticker> tickerList = tickerService.fetchTickers(tickerSymbols);
 
+        //Get data about tickers
         DataEntryService dataEntryService = new DataEntryService();
 
-        Map<Ticker, ArrayList<DataEntry>> tickerDataMap = dataEntryService.fetchTickerData(tickerList, date);
-        System.out.println("finished");
+        ArrayList<TickerTransferObject> tickerTransferObjects = dataEntryService.fetchTickerData(tickerList, date);
+
+        String jsonString = JSONObjectMapper.objectMapper.writeValueAsString(tickerTransferObjects);
+        System.out.println(jsonString);
     }
 
     @Override

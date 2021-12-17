@@ -1,6 +1,7 @@
 package entities;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,8 +12,7 @@ public class DataEntry {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "timestamp")
-    private LocalDateTime timestamp;
+
 
     @Column(name = "close_price")
     private Double closePrice;
@@ -23,6 +23,17 @@ public class DataEntry {
     @ManyToOne
     @JoinColumn(name = "ticker_id")
     private Ticker ticker;
+
+    @Column(name = "timestamp")
+    private Timestamp timestamp;
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public Ticker getTicker() {
         return ticker;
@@ -46,14 +57,6 @@ public class DataEntry {
 
     public void setClosePrice(Double closePrice) {
         this.closePrice = closePrice;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
     }
 
     public Long getId() {
