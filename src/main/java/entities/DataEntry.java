@@ -1,11 +1,15 @@
 package entities;
 
 import com.google.gson.annotations.Expose;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
+@Getter @Setter @NoArgsConstructor @ToString
 @Entity
 @Table(name = "data_entry")
 public class DataEntry {
@@ -13,7 +17,6 @@ public class DataEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
 
     @Expose
     @Column(name = "close_price")
@@ -23,6 +26,7 @@ public class DataEntry {
     @Column(name = "open_price")
     private Double openPrice;
 
+    @Expose
     @ManyToOne
     @JoinColumn(name = "ticker_id")
     private Ticker ticker;
@@ -31,43 +35,10 @@ public class DataEntry {
     @Column(name = "timestamp")
     private Timestamp timestamp;
 
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Ticker getTicker() {
-        return ticker;
-    }
-
-    public void setTicker(Ticker ticker) {
+    public DataEntry(Ticker ticker, Timestamp timestamp, Double closePrice, Double openPrice) {
         this.ticker = ticker;
-    }
-
-    public Double getOpenPrice() {
-        return openPrice;
-    }
-
-    public void setOpenPrice(Double openPrice) {
+        this.timestamp = timestamp;
         this.openPrice = openPrice;
-    }
-
-    public Double getClosePrice() {
-        return closePrice;
-    }
-
-    public void setClosePrice(Double closePrice) {
         this.closePrice = closePrice;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }

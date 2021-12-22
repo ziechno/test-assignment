@@ -2,11 +2,8 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dto.TickerTransferObject;
-import entities.Ticker;
-import services.DataEntryService;
+import entities.DataEntry;
 import services.TickerService;
-import utils.JSONObjectMapper;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,19 +23,11 @@ public class TestServlet extends HttpServlet {
         String tickerSymbols = request.getParameter("symbols");
         String date = request.getParameter("date");
 
-        //Get tickers to be presented
         TickerService tickerService = new TickerService();
-        ArrayList<Ticker> tickerList = tickerService.fetchTickers(tickerSymbols);
-
-        //Get data about tickers
-        DataEntryService dataEntryService = new DataEntryService();
-        ArrayList<TickerTransferObject> tickerTransferObjects = dataEntryService.fetchTickerData(tickerList, date);
+        ArrayList<DataEntry> tickerData = tickerService.getTickerData(tickerSymbols, date);
 
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        //String jsonString = JSONObjectMapper.objectMapper.writeValueAsString(tickerTransferObjects);
-        String jsonString = gson.toJson(tickerTransferObjects);
-        System.out.println(jsonString);
-
+        String jsonString = gson.toJson(tickerData);
         response.getWriter().print(jsonString);
     }
 

@@ -1,71 +1,63 @@
 package services;
 
 import dao.TickerDao;
+import entities.DataEntry;
 import entities.Ticker;
-import utils.JSONObjectMapper;
+import utils.HttpResponseReader;
 import utils.Utilities;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class TickerService {
-    // city, state, employees
+    // Base query URLs
     private static final String QUOTE_SUMMARY_BASEURL = "https://query1.finance.yahoo.com/v11/finance/quoteSummary/";
     private static final String QUOTE_SUMMARY_MODULE = "?modules=assetProfile";
-    // full name, market cap, first trade tade
     private static final String FINANCE_QUOTE_BASEURL = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=";
 
-    public ArrayList<Ticker> fetchTickers(String symbols) throws IOException {
-        TickerDao tickerDao = new TickerDao();
+    public ArrayList<DataEntry> getTickerData(String tickerSymbols, String date) throws IOException {
         //Get existing tickers from DB
-        ArrayList<String> tickerSymbols = Utilities.parseSymbols(symbols);
-        ArrayList<Ticker> tickerList = tickerDao.getAllFromList(tickerSymbols);
-        //Remove symbols that have DB entry
+        TickerDao tickerDao = new TickerDao();
+        ArrayList<String> tickerSymbolList = Utilities.parseSymbols(tickerSymbols);
+        ArrayList<Ticker> tickerList =  tickerDao.getAllFromList(tickerSymbolList);
+
+        //Remove symbols for tickers that already exist in DB
         for (Ticker t : tickerList) {
-            tickerSymbols.removeIf(n -> (n.equals(t.getSymbol())));
+            tickerSymbolList.removeIf(n -> (n.equals(t.getSymbol())));
         }
-        //Get non-existing tickers from server and save them to DB
-        for (String s : tickerSymbols) {
-            Ticker ticker = getTickerFromServer(s);
-            if(ticker != null){
-            tickerDao.save(ticker);
-            tickerList.add(ticker);
+
+        //Get non-existing ticker entries from Yahoo and save them to DB
+        ArrayList<Ticker> newTickers = new ArrayList<>();
+        for (String s : tickerSymbolList) {
+            Ticker newTicker = getTickerFromServer(s);
+            if(newTicker != null){
+                newTickers.add(newTicker);
             }
         }
-        return tickerList;
+        //Save newly obtained tickers in the DB, and merge them with already existing ones
+        tickerDao.saveAll(newTickers);
+        tickerList.addAll(newTickers);
+
+        //Get historical data about tickers
+        DataEntryService dataEntryService = new DataEntryService();
+        return dataEntryService.getHistoricalData(tickerList, date);
     }
 
-    private Ticker getTickerFromServer(String s) throws IOException {
-        //Get state, city and number of employees as JSON
-        URL quoteSummaryURL = new URL(QUOTE_SUMMARY_BASEURL + s + QUOTE_SUMMARY_MODULE);
-        HttpURLConnection tickerServerConnection = (HttpURLConnection) quoteSummaryURL.openConnection();
+    private Ticker getTickerFromServer(String symbol) throws IOException {
+        HttpResponseReader httpResponseReader = new HttpResponseReader();
+        //State, city, number of employees, full name, year founded, and market cap endpoints
+        URL quoteSummaryURL = new URL(QUOTE_SUMMARY_BASEURL + symbol + QUOTE_SUMMARY_MODULE);
+        URL financeQuoteURL = new URL(FINANCE_QUOTE_BASEURL + symbol);
 
-        if(tickerServerConnection.getResponseCode() == 200) {
-        BufferedReader br = new BufferedReader(new InputStreamReader(tickerServerConnection.getInputStream()));
-        String quoteSummary = br.readLine();
+        //If the ticker doesn't exist we will get 404 error code
+        if(httpResponseReader.getResponseCode(quoteSummaryURL) == 200) {
 
-
-            //Get full name, year founded and market cap as JSON
-            URL financeQuoteURL = new URL(FINANCE_QUOTE_BASEURL + s);
-            tickerServerConnection = (HttpURLConnection) financeQuoteURL.openConnection();
-            br = new BufferedReader(new InputStreamReader(tickerServerConnection.getInputStream()));
-            String quoteResponse = br.readLine();
+            String quoteSummary = httpResponseReader.readResponse(quoteSummaryURL);
+            String quoteResponse = httpResponseReader.readResponse(financeQuoteURL);
 
             //Create new ticker instance and assign values
-            Ticker ticker = new Ticker();
-            ticker.setSymbol(s);
-            ticker.setFullName(JSONObjectMapper.getObjectByKey(quoteResponse, "longName").asText());
-            ticker.setState(JSONObjectMapper.getObjectByKey(quoteSummary, "state").asText());
-            ticker.setCity(JSONObjectMapper.getObjectByKey(quoteSummary, "city").asText());
-            Long yearMilliseconds = JSONObjectMapper.getObjectByKey(quoteResponse, "firstTradeDateMilliseconds").asLong();
-            ticker.setYearFounded(Utilities.milisecondToDate(yearMilliseconds));
-            ticker.setEmployeeNumber(JSONObjectMapper.getObjectByKey(quoteSummary, "fullTimeEmployees").asInt());
-            return ticker;
+            return new Ticker(symbol, quoteSummary, quoteResponse);
         }
         return null;
     }

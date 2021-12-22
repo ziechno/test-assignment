@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class DataEntryDao extends AbstractDao {
@@ -28,8 +27,7 @@ public class DataEntryDao extends AbstractDao {
         q.setParameter("start", start);
         q.setParameter("end", end);
 
-        ArrayList<DataEntry> listOfData = (ArrayList<DataEntry>) q.getResultList();
-        return listOfData;
+        return (ArrayList<DataEntry>) q.getResultList();
     }
 
     public void saveAll(ArrayList<DataEntry> tickerData) {

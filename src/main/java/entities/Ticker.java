@@ -1,9 +1,17 @@
 package entities;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.annotations.Expose;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import utils.JSONObjectMapper;
+import utils.Utilities;
 
 import javax.persistence.*;
 
+@Getter @Setter @NoArgsConstructor @ToString
 @Entity
 @Table(name = "ticker")
 public class Ticker {
@@ -36,59 +44,18 @@ public class Ticker {
     @Column(name = "employee_number")
     private Integer employeeNumber;
 
-    public Integer getEmployeeNumber() {
-        return employeeNumber;
-    }
+    @Expose
+    @Column(name = "market_cap")
+    private Long marketCap;
 
-    public void setEmployeeNumber(Integer employeeNumber) {
-        this.employeeNumber = employeeNumber;
-    }
-
-    public Integer getYearFounded() {
-        return yearFounded;
-    }
-
-    public void setYearFounded(Integer yearFounded) {
-        this.yearFounded = yearFounded;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getSymbol() {
-        return symbol;
-    }
-
-    public void setSymbol(String symbol) {
+    public Ticker(String symbol, String quoteSummary, String quoteResponse) throws JsonProcessingException {
         this.symbol = symbol;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.fullName = JSONObjectMapper.getObjectByKey(quoteResponse, "longName").asText();
+        this.state = JSONObjectMapper.getObjectByKey(quoteSummary, "state").asText();
+        this.city = JSONObjectMapper.getObjectByKey(quoteSummary, "city").asText();
+        Long yearFounded = JSONObjectMapper.getObjectByKey(quoteResponse, "firstTradeDateMilliseconds").asLong();
+        this.yearFounded = Utilities.millisecondToDate(yearFounded).getYear();
+        this.employeeNumber = JSONObjectMapper.getObjectByKey(quoteSummary, "fullTimeEmployees").asInt();
+        this.marketCap = JSONObjectMapper.getObjectByKey(quoteResponse, "marketCap").asLong();
     }
 }
