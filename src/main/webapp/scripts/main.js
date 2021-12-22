@@ -1,16 +1,3 @@
-class FormattedDate{
-    constructor(Date) {
-
-        this.date = Date.getDate();
-        this.month = Date.getMonth() + 1;
-        this.year = Date.getFullYear();
-    }
-
-    toString(){
-        return this.year + "-" + this.month + "-" + this.date;
-    }
-}
-
 $(document).ready(function() {
     $('form').on('submit', function(e){
         e.preventDefault();
@@ -18,24 +5,26 @@ $(document).ready(function() {
   });
 
 $("#date-input").ready(function (){
-    var unixDateStart = new Date("01-01-1970");
-    var currentDate = new Date();
-    var minDate = new FormattedDate(unixDateStart);
-    var maxDate = new FormattedDate(currentDate);
-    document.getElementById("date-input").setAttribute("value", maxDate.toString());
-    document.getElementById("date-input").setAttribute("min", "1970-01-01");
-    document.getElementById("date-input").setAttribute("max", maxDate.toString());
+    let currentDate = moment().format("yyyy-MM-DD");
+    let minDate = moment("1970-01-01").format("yyyy-MM-DD");
+    document.getElementById("date-input").setAttribute("value", currentDate);
+    document.getElementById("date-input").setAttribute("min", minDate);
+    document.getElementById("date-input").setAttribute("max", currentDate);
+})
+
+$("#submit-button").click(function (){
+    verifyInput();
 })
 
 function verifyInput(){
-    var alertDisplay = document.getElementById("inputAlert");
+    let alertDisplay = document.getElementById("inputAlert");
     alertDisplay.setAttribute("style", "display: none")
-    var test = false;
-    var symbolInput = document.getElementById("symbol-input").value;
-    var dateInput = document.getElementById("date-input").value;
-    dateInput = new Date(dateInput);
-    var unixDateStart = new Date("1970-01-01");
-    var currentDate = new Date();
+    let test = false;
+    let symbolInput = document.getElementById("symbol-input").value;
+    let dateInput = document.getElementById("date-input").value;
+    dateInput = moment(dateInput).format("yyyy-MM-DD");
+    let unixDateStart = moment("1970-01-01").format("yyyy-MM-DD");
+    let currentDate = moment().format("yyyy-MM-DD");
     if(symbolInput == ''){
         alertDisplay.setAttribute("style", "display: block");
     }
@@ -51,8 +40,8 @@ function verifyInput(){
 }
 
 function fetch() {
-    var symbols = document.getElementById("symbol-input").value;
-    var date = document.getElementById("date-input").value;
+    let symbols = document.getElementById("symbol-input").value;
+    let date = document.getElementById("date-input").value;
     document.getElementById("tableContainer").setAttribute("style", "display: none");
     $.ajax({
         type: 'GET',
@@ -68,8 +57,8 @@ function fetch() {
 }
 
 function fillTable(data) {
-    var tableBody = document.getElementById("table-body");
-    var tableData = '';
+    let tableBody = document.getElementById("table-body");
+    let tableData = '';
 
     data.forEach(element => {
         tableData += '<tr>'
